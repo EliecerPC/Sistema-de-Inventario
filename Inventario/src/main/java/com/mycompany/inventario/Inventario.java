@@ -10,7 +10,7 @@ public class Inventario {
         
         Modelo modelo = new Modelo(); 
         
-        
+        //holanda
         //Lineas para probar si funciona el modelo
         
         // INSERTAR 
