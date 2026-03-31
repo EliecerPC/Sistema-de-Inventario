@@ -12,7 +12,7 @@ public class Inventario {
         
         //holanda
         //Lineas para probar si funciona el modelo
-        
+        // ramos....
         // INSERTAR 
         //modelo.insertarEquipo(1, "PC", "Computador", "HP", "Activo"); 
         // BUSCAR 
