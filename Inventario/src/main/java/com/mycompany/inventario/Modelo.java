@@ -1,3 +1,8 @@
+/*
+Se adaptaron los metodos para que retornaran los valores a la interfaz y no usara prints. 
+atte. Eliecer
+*/
+
 
 package com.mycompany.inventario;
 
@@ -7,14 +12,13 @@ public class Modelo {
     
     private static final String URL = "jdbc:sqlite:/home/eliecer/NetBeansProjects/Sistema-de-Inventario/Inventario/src/main/java/com/mycompany/inventario/inventario.db";
     
-    private Connection conectar() throws SQLException {
+    public Connection conectar() throws SQLException {
         return DriverManager.getConnection(URL);
     }
     
     
     //método para guardar información
-    
-    public void insertarEquipo(int id, String nombre, String tipo, String marca, String estado) {
+    public String insertarEquipo(int id, String nombre, String tipo, String marca, String estado) {
         String sql = "INSERT INTO equipos(id, nombre, tipo, marca, estado) VALUES(?, ?, ?, ?, ?)";
 
         try (Connection conn = conectar();
@@ -27,39 +31,44 @@ public class Modelo {
             ps.setString(5, estado);
             ps.executeUpdate();
 
-            System.out.println("Datos guardados correctamente.");
+            return "Datos guardados correctamente.";
         } catch (SQLException e) {
-            System.out.println("Error al insertar: " + e.getMessage());
+            return "Error al insertar: " + e.getMessage();
         }
+        
     }
     
     //método para buscar información
-    public void buscar(int id_b) {
+    public String buscar(int id_b) {
         String sql = "SELECT * FROM equipos WHERE id = ?";
+        String resultado = "";
 
         try (Connection conn = conectar();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id_b);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    System.out.println("ID: " + rs.getInt("id"));
-                    System.out.println("Nombre: " + rs.getString("nombre"));
-                    System.out.println("Tipo: " + rs.getString("tipo"));
-                    System.out.println("Marca: " + rs.getString("marca"));
-                    System.out.println("Estado: " + rs.getString("estado"));
-                } else {
-                    System.out.println("No se encontró un equipo con ese ID.");
-                }
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()){
+                resultado =
+                        "ID: " + rs.getInt("id") + "\n" +
+                        "Nombre: " + rs.getString("nombre") + "\n" +
+                        "Tipo: " + rs.getString("tipo") + "\n" +
+                        "Marca: " + rs.getString("marca") + "\n" +
+                        "Estado: " + rs.getString("estado");
+            }else{
+                resultado = "No se encontró el equipo.";
             }
+
         } catch (SQLException e){
             System.out.println("Error: "+ e.getMessage());
         }
+        
+        return resultado;
     }
     
     //método para eliminar información
-    public void eliminar(int id_b) {
+    public String eliminar(int id_b) {
         String sql = "DELETE FROM equipos WHERE id = ?";
 
         try (Connection conn = conectar();
@@ -69,36 +78,28 @@ public class Modelo {
 
             int filas = ps.executeUpdate();
             if (filas > 0) {
-                System.out.println("Registro eliminado correctamente.");
+                return "Registro eliminado correctamente.";
             } else {
-                System.out.println("No se encontró un equipo con ese ID.");
+                return "No se encontró un equipo con ese ID.";
             }
         } catch (SQLException e){
-            System.out.println("Error: "+ e.getMessage());
+            return "Error: "+ e.getMessage();
         }
     }
     
     //método para ver información
-    public void mostrar() {
+    public ResultSet mostrar() {
         String sql = "SELECT * FROM equipos";
 
-        try (Connection conn = conectar();
+        try{
+            Connection conn = conectar();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery()) {
+            return ps.executeQuery();
 
-            while (rs.next()) {
-                System.out.println(
-                    rs.getInt("id") + " | " +
-                    rs.getString("nombre") + " | " +
-                    rs.getString("tipo") + " | " +
-                    rs.getString("marca") + " | " +
-                    rs.getString("estado")
-                );
-            }
-        } catch (SQLException e){
-            System.out.println("Error: "+ e.getMessage());
-        }
+        } catch (SQLException e) {
+            return null;
     }
     
     
+}
 }
