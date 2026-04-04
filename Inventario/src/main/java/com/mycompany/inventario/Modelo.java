@@ -1,7 +1,3 @@
-/*
-Se adaptaron los metodos para que retornaran los valores a la interfaz y no usara prints. 
-atte. Eliecer
-*/
 
 
 package com.mycompany.inventario;
@@ -10,7 +6,7 @@ import java.sql.*;
 
 public class Modelo {
     
-    private static final String URL = "jdbc:sqlite:C:\\Users\\donca\\OneDrive\\Documentos\\NetBeansProjects\\Sistema-de-Inventario\\Inventario\\src\\main\\java\\com\\mycompany\\inventario/inventario.db";
+    private static final String URL = "jdbc:sqlite:/home/eliecer/NetBeansProjects/Sistema-de-Inventario/Inventario/src/main/java/com/mycompany/inventario/inventario.db";
     
     public Connection conectar() throws SQLException {
         return DriverManager.getConnection(URL);

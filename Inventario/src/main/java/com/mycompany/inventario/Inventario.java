@@ -2,8 +2,6 @@
 
 package com.mycompany.inventario;
 
-import java.sql.*;
-
 
 public class Inventario {
 
