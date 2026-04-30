@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 public class Vista extends JFrame {
     // Componentes de la interfaz
     private JTextField txtId, txtNombre, txtTipo, txtMarca, txtEstado;
-    private JButton btnInsertar, btnBuscar, btnEliminar, btnMostrar;
+    private JButton btnInsertar, btnBuscar, btnEliminar, btnMostrar, btnEditar; //Se agrega un botón provisional para editar
     private JTable tablaEquipos;
     private DefaultTableModel modeloTabla;
     private JTextArea areaResultados;
@@ -56,11 +56,13 @@ public class Vista extends JFrame {
         btnBuscar = new JButton("Buscar");
         btnEliminar = new JButton("Eliminar");
         btnMostrar = new JButton("Mostrar Todos");
+        btnEditar = new JButton("Editar"); //Nuevo
         
         panelBotones.add(btnInsertar);
         panelBotones.add(btnBuscar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnMostrar);
+        panelBotones.add(btnEditar);//Nuevo
         
         // Panel de resultados con tabla
         JPanel panelTabla = new JPanel(new BorderLayout());
@@ -155,6 +157,10 @@ public class Vista extends JFrame {
     
     public void setMostrarListener(ActionListener listener) {
         btnMostrar.addActionListener(listener);
+    }
+    
+    public void setEditarListener(ActionListener listener){
+        btnEditar.addActionListener(listener);
     }
 
 }

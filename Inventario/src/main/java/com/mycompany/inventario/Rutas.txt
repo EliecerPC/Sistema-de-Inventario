@@ -1,0 +1,7 @@
+Ubicación del archivo de la base de datos:
+
+Andrés: C:\\Users\\donca\\OneDrive\\Documentos\\NetBeansProjects\\Sistema-de-Inventario\\Inventario\\src\\main\\java\\com\\mycompany\\inventario/inventario.db
+
+Diomedes: 
+
+Jesus: D:\\Documentos\\Programación\\Sistema-de-Inventario\\Inventario\\src\\main\\java\\com\\mycompany\\inventario/inventario.db

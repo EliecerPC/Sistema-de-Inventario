@@ -16,7 +16,7 @@ public class Inventario {
         // Hacer visible la ventana
         vista.setVisible(true);
         
-           
+                   
    }  
     
     

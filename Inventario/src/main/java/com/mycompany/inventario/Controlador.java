@@ -99,6 +99,31 @@ public class Controlador {
                 vista.mostrarMensaje("Error: " + ex.getMessage());
             }
         });
+        
+        //Editar registros
+        vista.setEditarListener(e ->{
+            
+            
+            int id = vista.getId();
+
+            // Trae los valores actuales de la BD
+            String[] actual = modelo.obtenerEquipoPorId(id);
+
+            if (actual == null) {
+                vista.mostrarMensaje("No se encontró un equipo con ese ID.");
+                return;
+            }
+
+            // Si el campo del formulario está vacío, usa el valor actual de la BD
+            String nombre = vista.getNombre().trim().isEmpty() ? actual[0] : vista.getNombre().trim();
+            String tipo = vista.getTipo().trim().isEmpty() ? actual[1] : vista.getTipo().trim();
+            String marca = vista.getMarca().trim().isEmpty() ? actual[2] : vista.getMarca().trim();
+            String estado = vista.getEstado().trim().isEmpty() ? actual[3] : vista.getEstado().trim();
+
+            String mensaje = modelo.editar_registro(id, nombre, tipo, marca, estado);
+            vista.mostrarMensaje(mensaje);
+            
+        });
     }
     }
     

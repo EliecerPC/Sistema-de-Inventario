@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class Modelo {
     
-    private static final String URL = "jdbc:sqlite:/home/eliecer/NetBeansProjects/Sistema-de-Inventario/Inventario/src/main/java/com/mycompany/inventario/inventario.db";
+    private static final String URL = "jdbc:sqlite:D:\\Documentos\\Programación\\Sistema-de-Inventario\\Inventario\\src\\main\\java\\com\\mycompany\\inventario/inventario.db";
     
     public Connection conectar() throws SQLException {
         return DriverManager.getConnection(URL);
@@ -98,4 +98,54 @@ public class Modelo {
     
     
 }
+    
+    
+    /*
+    Pruebas para el método nuevo
+    */
+    
+    
+    
+    //método para editar registros
+    public String editar_registro(int id, String nombre, String tipo, String marca, String estado){
+        String sql = "UPDATE equipos SET nombre = ?, tipo = ?, marca = ?, estado = ? WHERE id = ?";
+        
+        try (Connection conn = conectar();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nombre);
+            ps.setString(2, tipo);
+            ps.setString(3, marca);
+            ps.setString(4, estado);
+            ps.setInt(5, id);
+            ps.executeUpdate();
+
+            return "Datos actualizados correctamente.";
+        } catch (SQLException e) {
+            return "Error al actualizar: " + e.getMessage();
+        }
+    }
+    
+    //Nuevo método de búsqueda necesario para que editar funcione
+    public String[] obtenerEquipoPorId(int id) {
+        String sql = "SELECT nombre, tipo, marca, estado FROM equipos WHERE id = ?";
+        try (Connection conn = conectar();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return new String[]{
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("marca"),
+                    rs.getString("estado")
+                };
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
 }
