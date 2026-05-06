@@ -78,6 +78,11 @@ public class Controlador {
         vista.setEliminarListener(e -> {
             String mensaje = modelo.eliminar(vista.getId());
             vista.mostrarMensaje(mensaje);
+            
+            // Auditoría
+            if (mensaje.contains("correctamente")) {
+                modelo.registrarAuditoria(usuarioActual.getUsername(), "ELIMINAR", vista.getId());
+            }
         });
         
         //mostrar todo
