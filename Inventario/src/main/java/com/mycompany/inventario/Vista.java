@@ -162,5 +162,10 @@ public class Vista extends JFrame {
     public void setEditarListener(ActionListener listener){
         btnEditar.addActionListener(listener);
     }
+    
+    //Nuevos - Habilitan o desabilitan los botones en funcion del rol
+    public void habilitarInsertar(boolean b) { btnInsertar.setEnabled(b); }
+    public void habilitarEditar(boolean b)   { btnEditar.setEnabled(b); }
+    public void habilitarEliminar(boolean b) { btnEliminar.setEnabled(b); }
 
 }

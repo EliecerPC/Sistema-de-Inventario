@@ -99,12 +99,9 @@ public class Modelo {
     
 }
     
-    
     /*
-    Pruebas para el método nuevo
+    Métodos agregados para la función editar
     */
-    
-    
     
     //método para editar registros
     public String editar_registro(int id, String nombre, String tipo, String marca, String estado){
@@ -148,4 +145,51 @@ public class Modelo {
         }
         return null;
     }
+    
+    
+    /*
+    Métodos nuevos para la validación de usuarios
+    */
+    
+    /*Implementación de login para usuarios*/
+    // Verificar login — retorna el rol si las credenciales son correctas, null si no
+    
+    public Usuario login(String username, String password) {
+        // Consulta SQL para obtener el rol del usuario si las credenciales coinciden
+        String sql = "SELECT rol FROM usuarios WHERE username = ? AND password = ?";
+        try (Connection conn = conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Usuario(username, rs.getString("rol"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error login: " + e.getMessage());
+        }
+        return null;
+    }
+
+// Registrar auditoría
+    //Método que registra una acción en la tabla de auditoría
+    
+    public void registrarAuditoria(String username, String accion, int idEquipo) {
+         // Consulta SQL para insertar un registro en la tabla auditoria
+        String sql = "INSERT INTO auditoria(usuario, accion, id_equipo, fecha_hora) VALUES(?, ?, ?, ?)";
+        try (Connection conn = conectar(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ps.setString(2, accion);
+            ps.setInt(3, idEquipo);
+            // Se obtiene la fecha y hora actual del sistema
+            ps.setString(4, java.time.LocalDateTime.now().toString());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Error auditoría: " + e.getMessage());
+        }
+    }
+    
 }
