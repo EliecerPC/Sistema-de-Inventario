@@ -33,19 +33,32 @@ public class Controlador {
         
         //buscar
         //Se modifica para que no tenga responsabilidades del modelo
+        //Se modifica para buscar por estado
         vista.setBuscarListener(e -> {
-            int id = vista.getId();
-            if (id == -1) {
-                vista.mostrarMensaje("ID inválido");
-            return;
-            }
-            
-            String[] equipo = modelo.buscar(id);
             vista.limpiarTabla();
-            if (equipo != null) {
-                vista.agregarFilaTabla(equipo);
+            int id = vista.getId();
+            String estado = vista.getEstado().trim();
+
+            if (id != -1) {
+            // Busca por ID si hay un ID válido
+            String[] equipo = modelo.buscar(id);
+                if (equipo != null) {
+                    vista.agregarFilaTabla(equipo);
+                } else {
+                    vista.mostrarMensaje("No se encontró el equipo");
+                }
+            } else if (!estado.isEmpty()) {
+                // Busca por estado si el campo estado tiene algo
+                List<String[]> resultados = modelo.buscarPorEstado(estado);
+                    if (resultados.isEmpty()) {
+                        vista.mostrarMensaje("No se encontraron equipos con ese estado");
+                    } else {
+                        for (String[] fila : resultados) {
+                            vista.agregarFilaTabla(fila);
+                        }
+                    }
             } else {
-                vista.mostrarMensaje("No se encontró el equipo");
+                vista.mostrarMensaje("Ingresa un ID o un Estado para buscar");
             }
         });
         

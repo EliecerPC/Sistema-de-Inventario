@@ -126,35 +126,10 @@ public class Modelo {
         } catch (SQLException e) {
             return "Error al actualizar: " + e.getMessage();
         }
-    }
-    
-    //Nuevo método de búsqueda necesario para que editar funcione
-    
-    //public String[] obtenerEquipoPorId(int id) {
-      //  String sql = "SELECT nombre, tipo, marca, estado FROM equipos WHERE id = ?";
-        //try (Connection conn = conectar();
-          //  PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            //ps.setInt(1, id);
-            //ResultSet rs = ps.executeQuery();
-            
-            //if (rs.next()) {
-              //  return new String[]{
-                //    rs.getString("nombre"),
-                  //  rs.getString("tipo"),
-                    //rs.getString("marca"),
-                    //rs.getString("estado")
-                //};
-            //}
-        //} catch (SQLException e) {
-          //  System.out.println("Error: " + e.getMessage());
-        //}
-        //return null;
-    //}
-    
+    } 
     
     /*
-    Métodos nuevos para la validación de usuarios
+    Métodos  para la validación de usuarios
     */
     
     /*Implementación de login para usuarios*/
@@ -196,6 +171,31 @@ public class Modelo {
         } catch (SQLException e) {
             System.out.println("Error auditoría: " + e.getMessage());
         }
+    }
+    
+    /*Método para buscar por estado (Funciona/Fuera de servicio/Mantenimiento*/
+    
+    public List<String[]> buscarPorEstado(String estado) {
+        String sql = "SELECT * FROM equipos WHERE estado LIKE ?";
+        List<String[]> lista = new ArrayList<>();
+        try (Connection conn = conectar();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, "%" + estado + "%");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                lista.add(new String[]{
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("marca"),
+                    rs.getString("estado")
+                });
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return lista;
     }
     
 }
