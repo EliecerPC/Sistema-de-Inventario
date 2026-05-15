@@ -1,9 +1,7 @@
 
 package com.mycompany.inventario;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.List;
 
 
 public class Controlador {
@@ -34,44 +32,21 @@ public class Controlador {
         });
         
         //buscar
+        //Se modifica para que no tenga responsabilidades del modelo
         vista.setBuscarListener(e -> {
             int id = vista.getId();
-
             if (id == -1) {
                 vista.mostrarMensaje("ID inválido");
-                return;
+            return;
             }
-
-            try {
-                vista.limpiarTabla();
-
-                Connection conn = modelo.conectar();
-                String sql = "SELECT * FROM equipos WHERE id = ?";
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, id);
-
-                ResultSet rs = ps.executeQuery();
-
-                if (rs.next()) {
-                    Object[] fila = {
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("tipo"),
-                        rs.getString("marca"),
-                        rs.getString("estado")
-                    };
-
-                    vista.agregarFilaTabla(fila);
-                } else {
-                    vista.mostrarMensaje("No se encontró el equipo");
-                }
-
-                conn.close();
-
-            } catch (Exception ex) {
-                vista.mostrarMensaje("Error: " + ex.getMessage());
+            
+            String[] equipo = modelo.buscar(id);
+            vista.limpiarTabla();
+            if (equipo != null) {
+                vista.agregarFilaTabla(equipo);
+            } else {
+                vista.mostrarMensaje("No se encontró el equipo");
             }
-
         });
         
         //eliminar
@@ -87,43 +62,26 @@ public class Controlador {
         
         //mostrar todo
         vista.setMostrarListener(e -> {
-            try {
-                vista.limpiarTabla();
-
-                Connection conn = modelo.conectar(); 
-                ResultSet rs = modelo.mostrar();
-
-                while (rs.next()) {
-                    Object[] fila = {
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("tipo"),
-                        rs.getString("marca"),
-                        rs.getString("estado")
-                    };
-
-                    vista.agregarFilaTabla(fila);
-                }
-
-                conn.close(); 
-
-            } catch (Exception ex) {
-                vista.mostrarMensaje("Error: " + ex.getMessage());
+            vista.limpiarTabla();
+            List<String[]> equipos = modelo.mostrar();
+            for (String[] fila : equipos) {
+                vista.agregarFilaTabla(fila);
             }
         });
+
         
         //Editar registros - Modificado
         vista.setEditarListener(e -> {
             int id = vista.getId();
-            String[] actual = modelo.obtenerEquipoPorId(id);
+            String[] actual = modelo.buscar(id);
             if (actual == null) {
                 vista.mostrarMensaje("No se encontró un equipo con ese ID.");
                 return;
             }
-            String nombre = vista.getNombre().trim().isEmpty() ? actual[0] : vista.getNombre().trim();
-            String tipo   = vista.getTipo().trim().isEmpty()   ? actual[1] : vista.getTipo().trim();
-            String marca  = vista.getMarca().trim().isEmpty()  ? actual[2] : vista.getMarca().trim();
-            String estado = vista.getEstado().trim().isEmpty() ? actual[3] : vista.getEstado().trim();
+            String nombre = vista.getNombre().trim().isEmpty() ? actual[1] : vista.getNombre().trim();
+            String tipo   = vista.getTipo().trim().isEmpty()   ? actual[2] : vista.getTipo().trim();
+            String marca  = vista.getMarca().trim().isEmpty()  ? actual[3] : vista.getMarca().trim();
+            String estado = vista.getEstado().trim().isEmpty() ? actual[4] : vista.getEstado().trim();
 
             String mensaje = modelo.editar_registro(id, nombre, tipo, marca, estado);
             vista.mostrarMensaje(mensaje);

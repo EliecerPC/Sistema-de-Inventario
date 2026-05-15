@@ -3,6 +3,8 @@
 package com.mycompany.inventario;
 
 import java.sql.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Modelo {
     
@@ -35,32 +37,28 @@ public class Modelo {
     }
     
     //método para buscar información
-    public String buscar(int id_b) {
+    //modificado para que pueda retornar los valores como un array
+    public String[] buscar(int id) {
         String sql = "SELECT * FROM equipos WHERE id = ?";
-        String resultado = "";
-
         try (Connection conn = conectar();
             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id_b);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            
-            if (rs.next()){
-                resultado =
-                        "ID: " + rs.getInt("id") + "\n" +
-                        "Nombre: " + rs.getString("nombre") + "\n" +
-                        "Tipo: " + rs.getString("tipo") + "\n" +
-                        "Marca: " + rs.getString("marca") + "\n" +
-                        "Estado: " + rs.getString("estado");
-            }else{
-                resultado = "No se encontró el equipo.";
-            }
 
-        } catch (SQLException e){
-            System.out.println("Error: "+ e.getMessage());
+            if (rs.next()) {
+                return new String[]{
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("marca"),
+                    rs.getString("estado")
+                };
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
         }
-        
-        return resultado;
+        return null;
     }
     
     //método para eliminar información
@@ -84,20 +82,27 @@ public class Modelo {
     }
     
     //método para ver información
-    public ResultSet mostrar() {
+    public List<String[]> mostrar() {
         String sql = "SELECT * FROM equipos";
-
-        try{
-            Connection conn = conectar();
+        List<String[]> lista = new ArrayList<>();
+        try (Connection conn = conectar();
             PreparedStatement ps = conn.prepareStatement(sql);
-            return ps.executeQuery();
+            ResultSet rs = ps.executeQuery()) {
 
+            while (rs.next()) {
+                lista.add(new String[]{
+                    String.valueOf(rs.getInt("id")),
+                    rs.getString("nombre"),
+                    rs.getString("tipo"),
+                    rs.getString("marca"),
+                    rs.getString("estado")
+                });
+            }
         } catch (SQLException e) {
-            return null;
+            System.out.println("Error: " + e.getMessage());
+        }
+        return lista;
     }
-    
-    
-}
     
     /*
     Métodos agregados para la función editar
@@ -124,27 +129,28 @@ public class Modelo {
     }
     
     //Nuevo método de búsqueda necesario para que editar funcione
-    public String[] obtenerEquipoPorId(int id) {
-        String sql = "SELECT nombre, tipo, marca, estado FROM equipos WHERE id = ?";
-        try (Connection conn = conectar();
-            PreparedStatement ps = conn.prepareStatement(sql)) {
+    
+    //public String[] obtenerEquipoPorId(int id) {
+      //  String sql = "SELECT nombre, tipo, marca, estado FROM equipos WHERE id = ?";
+        //try (Connection conn = conectar();
+          //  PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+            //ps.setInt(1, id);
+            //ResultSet rs = ps.executeQuery();
             
-            if (rs.next()) {
-                return new String[]{
-                    rs.getString("nombre"),
-                    rs.getString("tipo"),
-                    rs.getString("marca"),
-                    rs.getString("estado")
-                };
-            }
-        } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-        return null;
-    }
+            //if (rs.next()) {
+              //  return new String[]{
+                //    rs.getString("nombre"),
+                  //  rs.getString("tipo"),
+                    //rs.getString("marca"),
+                    //rs.getString("estado")
+                //};
+            //}
+        //} catch (SQLException e) {
+          //  System.out.println("Error: " + e.getMessage());
+        //}
+        //return null;
+    //}
     
     
     /*
